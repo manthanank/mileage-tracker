@@ -83,7 +83,7 @@ export class Auth {
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('activeVehicleId'); // clear active vehicle session
     this.currentUser.set(null);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/']);
   }
 
   private handleAuthentication(res: any) {

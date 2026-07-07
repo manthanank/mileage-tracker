@@ -25,31 +25,31 @@
 
     <!-- Navigation Menu links -->
     <nav class="flex-1 flex flex-col gap-2">
-      <a routerLink="/dashboard" routerLinkActive="bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400" class="flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40 hover:text-slate-100 transition-all duration-200">
+      <a routerLink="/app/dashboard" routerLinkActive="bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400" class="flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40 hover:text-slate-100 transition-all duration-200">
         <span class="material-symbols-outlined text-[22px]">dashboard</span>
         <span class="text-sm font-medium">Dashboard</span>
       </a>
-      <a routerLink="/fuel-logs" routerLinkActive="bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400" class="flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40 hover:text-slate-100 transition-all duration-200">
+      <a routerLink="/app/fuel-logs" routerLinkActive="bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400" class="flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40 hover:text-slate-100 transition-all duration-200">
         <span class="material-symbols-outlined text-[22px]">local_gas_station</span>
         <span class="text-sm font-medium">Fuel Logs</span>
       </a>
-      <a routerLink="/trips" routerLinkActive="bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400" class="flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40 hover:text-slate-100 transition-all duration-200">
+      <a routerLink="/app/trips" routerLinkActive="bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400" class="flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40 hover:text-slate-100 transition-all duration-200">
         <span class="material-symbols-outlined text-[22px]">directions_run</span>
         <span class="text-sm font-medium">Trips</span>
       </a>
-      <a routerLink="/expenses" routerLinkActive="bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400" class="flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40 hover:text-slate-100 transition-all duration-200">
+      <a routerLink="/app/expenses" routerLinkActive="bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400" class="flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40 hover:text-slate-100 transition-all duration-200">
         <span class="material-symbols-outlined text-[22px]">payments</span>
         <span class="text-sm font-medium">Expenses</span>
       </a>
-      <a routerLink="/maintenance" routerLinkActive="bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400" class="flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40 hover:text-slate-100 transition-all duration-200">
+      <a routerLink="/app/maintenance" routerLinkActive="bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400" class="flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40 hover:text-slate-100 transition-all duration-200">
         <span class="material-symbols-outlined text-[22px]">build</span>
         <span class="text-sm font-medium">Maintenance</span>
       </a>
-      <a routerLink="/garage" routerLinkActive="bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400" class="flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40 hover:text-slate-100 transition-all duration-200">
+      <a routerLink="/app/garage" routerLinkActive="bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400" class="flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40 hover:text-slate-100 transition-all duration-200">
         <span class="material-symbols-outlined text-[22px]">garage</span>
         <span class="text-sm font-medium">Digital Garage</span>
       </a>
-      <a routerLink="/vehicles" routerLinkActive="bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400" class="flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40 hover:text-slate-100 transition-all duration-200">
+      <a routerLink="/app/vehicles" routerLinkActive="bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400" class="flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40 hover:text-slate-100 transition-all duration-200">
         <span class="material-symbols-outlined text-[22px]">settings</span>
         <span class="text-sm font-medium">Manage Vehicles</span>
       </a>
@@ -95,31 +95,31 @@
       </div>
 
       <nav class="flex-1 flex flex-col gap-2">
-        <a routerLink="/dashboard" (click)="toggleSidebar()" routerLinkActive="bg-emerald-500/10 text-emerald-400" class="flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <a routerLink="/app/dashboard" (click)="toggleSidebar()" routerLinkActive="bg-emerald-500/10 text-emerald-400" class="flex items-center gap-3 px-3 py-2.5 rounded-lg">
           <span class="material-symbols-outlined">dashboard</span>
           <span>Dashboard</span>
         </a>
-        <a routerLink="/fuel-logs" (click)="toggleSidebar()" routerLinkActive="bg-emerald-500/10 text-emerald-400" class="flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <a routerLink="/app/fuel-logs" (click)="toggleSidebar()" routerLinkActive="bg-emerald-500/10 text-emerald-400" class="flex items-center gap-3 px-3 py-2.5 rounded-lg">
           <span class="material-symbols-outlined">local_gas_station</span>
           <span>Fuel Logs</span>
         </a>
-        <a routerLink="/trips" (click)="toggleSidebar()" routerLinkActive="bg-emerald-500/10 text-emerald-400" class="flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <a routerLink="/app/trips" (click)="toggleSidebar()" routerLinkActive="bg-emerald-500/10 text-emerald-400" class="flex items-center gap-3 px-3 py-2.5 rounded-lg">
           <span class="material-symbols-outlined">directions_run</span>
           <span>Trips</span>
         </a>
-        <a routerLink="/expenses" (click)="toggleSidebar()" routerLinkActive="bg-emerald-500/10 text-emerald-400" class="flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <a routerLink="/app/expenses" (click)="toggleSidebar()" routerLinkActive="bg-emerald-500/10 text-emerald-400" class="flex items-center gap-3 px-3 py-2.5 rounded-lg">
           <span class="material-symbols-outlined">payments</span>
           <span>Expenses</span>
         </a>
-        <a routerLink="/maintenance" (click)="toggleSidebar()" routerLinkActive="bg-emerald-500/10 text-emerald-400" class="flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <a routerLink="/app/maintenance" (click)="toggleSidebar()" routerLinkActive="bg-emerald-500/10 text-emerald-400" class="flex items-center gap-3 px-3 py-2.5 rounded-lg">
           <span class="material-symbols-outlined">build</span>
           <span>Maintenance</span>
         </a>
-        <a routerLink="/garage" (click)="toggleSidebar()" routerLinkActive="bg-emerald-500/10 text-emerald-400" class="flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <a routerLink="/app/garage" (click)="toggleSidebar()" routerLinkActive="bg-emerald-500/10 text-emerald-400" class="flex items-center gap-3 px-3 py-2.5 rounded-lg">
           <span class="material-symbols-outlined">garage</span>
           <span>Digital Garage</span>
         </a>
-        <a routerLink="/vehicles" (click)="toggleSidebar()" routerLinkActive="bg-emerald-500/10 text-emerald-400" class="flex items-center gap-3 px-3 py-2.5 rounded-lg">
+        <a routerLink="/app/vehicles" (click)="toggleSidebar()" routerLinkActive="bg-emerald-500/10 text-emerald-400" class="flex items-center gap-3 px-3 py-2.5 rounded-lg">
           <span class="material-symbols-outlined">settings</span>
           <span>Manage Vehicles</span>
         </a>
@@ -184,7 +184,7 @@
               @if (vehicleService.vehicles().length === 0) {
                 <div class="px-4 py-3 text-sm text-slate-400 flex flex-col gap-2">
                   <span>No vehicles available.</span>
-                  <a routerLink="/vehicles" (click)="toggleVehicleDropdown()" class="text-xs text-emerald-400 hover:underline flex items-center gap-1 font-semibold">
+                  <a routerLink="/app/vehicles" (click)="toggleVehicleDropdown()" class="text-xs text-emerald-400 hover:underline flex items-center gap-1 font-semibold">
                     <span class="material-symbols-outlined text-sm">add</span> Add one now
                   </a>
                 </div>
@@ -208,7 +208,7 @@
                   }
                 </div>
                 <div class="border-t border-slate-800 mt-2 pt-2 px-4">
-                  <a routerLink="/vehicles" (click)="toggleVehicleDropdown()" class="text-xs text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-1">
+                  <a routerLink="/app/vehicles" (click)="toggleVehicleDropdown()" class="text-xs text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-1">
                     <span class="material-symbols-outlined text-sm">settings</span> Manage Garage
                   </a>
                 </div>
@@ -232,14 +232,14 @@
 
     <!-- Main Viewport scrollable content -->
     <main class="flex-1 overflow-y-auto bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900">
-      @if (!vehicleService.activeVehicle() && router.url !== '/vehicles') {
+      @if (!vehicleService.activeVehicle() && router.url !== '/app/vehicles') {
         <div class="max-w-md mx-auto mt-20 p-8 bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-3xl text-center shadow-2xl animate-fadeIn">
           <span class="material-symbols-outlined text-emerald-400 text-6xl mb-4 font-light">garage</span>
           <h2 class="text-2xl font-bold tracking-tight mb-2">Configure Your Garage</h2>
           <p class="text-slate-400 text-sm leading-relaxed mb-6">
             DrivePulse works at its best when you register a vehicle. Let's head over to the Garage setup to register your first ride!
           </p>
-          <a routerLink="/vehicles" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold hover:shadow-lg hover:shadow-emerald-500/20 transition-all cursor-pointer">
+          <a routerLink="/app/vehicles" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold hover:shadow-lg hover:shadow-emerald-500/20 transition-all cursor-pointer">
             <span class="material-symbols-outlined text-lg">add</span> Register Vehicle
           </a>
         </div>
