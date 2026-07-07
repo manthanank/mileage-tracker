@@ -1,9 +1,5 @@
 const app = require('./app');
 const config = require('./config/config');
-const connectDB = require('./config/db');
-
-// Connect to MongoDB Database
-connectDB();
 
 const server = app.listen(config.port, () => {
   console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${config.port}`);

@@ -9,6 +9,7 @@ const path = require('path');
 const config = require('./config/config');
 const errorHandler = require('./middleware/errorHandler');
 const { apiLimiter, authLimiter } = require('./middleware/rateLimiter');
+const connectDB = require('./config/db');
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -22,6 +23,9 @@ const notificationRoutes = require('./routes/notifications');
 const analyticsRoutes = require('./routes/analytics');
 
 const app = express();
+
+// Initialize MongoDB connection (essential for serverless runs)
+connectDB();
 
 // Trust Vercel's reverse proxy (needed for express-rate-limit)
 app.set('trust proxy', 1);
