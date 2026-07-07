@@ -1,0 +1,152 @@
+<div class="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden select-none font-sans">
+  
+  <!-- Ambient background glow elements -->
+  <div class="absolute top-1/4 left-1/4 w-80 h-80 rounded-full bg-emerald-500/10 blur-[100px] pointer-events-none"></div>
+  <div class="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full bg-cyan-500/10 blur-[100px] pointer-events-none"></div>
+
+  <!-- Auth Card -->
+  <div class="w-full max-w-md bg-slate-900/40 backdrop-blur-2xl border border-slate-800/80 p-8 rounded-3xl shadow-2xl relative z-10">
+    
+    <!-- Title / Logo Header -->
+    <div class="text-center mb-6">
+      <div class="inline-flex p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 mb-3 shadow-lg shadow-emerald-500/5">
+        <span class="material-symbols-outlined text-3xl font-light">person_add</span>
+      </div>
+      <h2 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent mb-1.5">
+        Create Your Account
+      </h2>
+      <p class="text-xs text-slate-400 font-medium">Join DrivePulse to begin tracking fuel efficiency, garage expiries, and ride scores.</p>
+    </div>
+
+    <!-- Error Banner -->
+    @if (errorMessage(); as msg) {
+      <div class="bg-rose-500/10 border border-rose-500/20 rounded-2xl p-4 mb-5 flex items-start gap-3 animate-fadeIn text-rose-400 text-xs">
+        <span class="material-symbols-outlined text-lg shrink-0 mt-0.5">error</span>
+        <span>{{ msg }}</span>
+      </div>
+    }
+
+    <!-- Registration Form -->
+    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+      
+      <!-- Username Field -->
+      <div class="flex flex-col gap-1.5">
+        <label for="username" class="text-xs text-slate-400 font-bold uppercase tracking-wider pl-1">Username</label>
+        <div class="relative flex items-center">
+          <span class="material-symbols-outlined text-slate-500 absolute left-3.5 text-lg">person</span>
+          <input 
+            type="text" 
+            id="username" 
+            formControlName="username"
+            placeholder="johndoe"
+            class="w-full bg-slate-950/40 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-2xl py-3 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-600 transition-all outline-none"
+            [class.border-rose-500]="registerForm.get('username')?.touched && registerForm.get('username')?.invalid"
+          />
+        </div>
+        @if (registerForm.get('username')?.touched && registerForm.get('username')?.invalid) {
+          <p class="text-[10px] text-rose-400 font-semibold pl-2">
+            @if (registerForm.get('username')?.hasError('required')) { Username is required }
+            @else if (registerForm.get('username')?.hasError('minlength')) { Username must be at least 3 characters }
+          </p>
+        }
+      </div>
+
+      <!-- Email Field -->
+      <div class="flex flex-col gap-1.5">
+        <label for="email" class="text-xs text-slate-400 font-bold uppercase tracking-wider pl-1">Email Address</label>
+        <div class="relative flex items-center">
+          <span class="material-symbols-outlined text-slate-500 absolute left-3.5 text-lg">mail</span>
+          <input 
+            type="email" 
+            id="email" 
+            formControlName="email"
+            placeholder="john.doe@example.com"
+            class="w-full bg-slate-950/40 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-2xl py-3 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-600 transition-all outline-none"
+            [class.border-rose-500]="registerForm.get('email')?.touched && registerForm.get('email')?.invalid"
+          />
+        </div>
+        @if (registerForm.get('email')?.touched && registerForm.get('email')?.invalid) {
+          <p class="text-[10px] text-rose-400 font-semibold pl-2">
+            @if (registerForm.get('email')?.hasError('required')) { Email is required }
+            @else if (registerForm.get('email')?.hasError('email')) { Enter a valid email address }
+          </p>
+        }
+      </div>
+
+      <!-- Password Field -->
+      <div class="flex flex-col gap-1.5">
+        <label for="password" class="text-xs text-slate-400 font-bold uppercase tracking-wider pl-1">Password</label>
+        <div class="relative flex items-center">
+          <span class="material-symbols-outlined text-slate-500 absolute left-3.5 text-lg">lock</span>
+          <input 
+            [type]="showPassword() ? 'text' : 'password'" 
+            id="password" 
+            formControlName="password"
+            placeholder="••••••••"
+            class="w-full bg-slate-950/40 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-2xl py-3 pl-11 pr-11 text-sm text-slate-100 placeholder:text-slate-600 transition-all outline-none"
+            [class.border-rose-500]="registerForm.get('password')?.touched && registerForm.get('password')?.invalid"
+          />
+          <button 
+            type="button" 
+            (click)="togglePasswordVisibility()" 
+            class="absolute right-3.5 text-slate-500 hover:text-slate-300 focus:outline-none cursor-pointer"
+          >
+            <span class="material-symbols-outlined text-lg leading-none">
+              {{ showPassword() ? 'visibility_off' : 'visibility' }}
+            </span>
+          </button>
+        </div>
+        @if (registerForm.get('password')?.touched && registerForm.get('password')?.invalid) {
+          <p class="text-[10px] text-rose-400 font-semibold pl-2">
+            @if (registerForm.get('password')?.hasError('required')) { Password is required }
+            @else if (registerForm.get('password')?.hasError('minlength')) { Password must be at least 6 characters }
+          </p>
+        }
+      </div>
+
+      <!-- Confirm Password Field -->
+      <div class="flex flex-col gap-1.5">
+        <label for="confirmPassword" class="text-xs text-slate-400 font-bold uppercase tracking-wider pl-1">Confirm Password</label>
+        <div class="relative flex items-center">
+          <span class="material-symbols-outlined text-slate-500 absolute left-3.5 text-lg">lock_reset</span>
+          <input 
+            [type]="showPassword() ? 'text' : 'password'" 
+            id="confirmPassword" 
+            formControlName="confirmPassword"
+            placeholder="••••••••"
+            class="w-full bg-slate-950/40 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-2xl py-3 pl-11 pr-4 text-sm text-slate-100 placeholder:text-slate-600 transition-all outline-none"
+            [class.border-rose-500]="registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.invalid"
+          />
+        </div>
+        @if (registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.invalid) {
+          <p class="text-[10px] text-rose-400 font-semibold pl-2">
+            @if (registerForm.get('confirmPassword')?.hasError('required')) { Confirm password is required }
+            @else if (registerForm.get('confirmPassword')?.hasError('passwordsMismatch')) { Passwords do not match }
+          </p>
+        }
+      </div>
+
+      <!-- Submit Action Button -->
+      <button 
+        type="submit" 
+        [disabled]="isSubmitting()"
+        class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-extrabold rounded-2xl py-3.5 text-sm hover:shadow-lg hover:shadow-emerald-500/20 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-55 disabled:pointer-events-none cursor-pointer mt-2 shadow-md"
+      >
+        @if (isSubmitting()) {
+          <span class="w-4 h-4 rounded-full border-2 border-slate-950 border-t-transparent animate-spin"></span>
+          <span>Creating account...</span>
+        } @else {
+          <span>Create Account</span>
+          <span class="material-symbols-outlined text-lg leading-none">person_add</span>
+        }
+      </button>
+
+      <!-- Redirect Link -->
+      <p class="text-xs text-slate-400 text-center font-medium mt-4">
+        Already have an account? 
+        <a routerLink="/login" class="text-emerald-400 font-bold hover:text-emerald-300 hover:underline">Sign In</a>
+      </p>
+
+    </form>
+  </div>
+</div>

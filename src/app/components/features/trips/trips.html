@@ -1,0 +1,387 @@
+<div class="max-w-7xl mx-auto p-4 md:p-6 select-none font-sans">
+  
+  <!-- Header Title -->
+  <div class="flex items-center justify-between border-b border-slate-800/60 pb-4 mb-6">
+    <div>
+      <h2 class="text-xl font-bold tracking-tight">Trip Management</h2>
+      <p class="text-xs text-slate-400">Track and calculate distance, fuel costs, and ride scores for every journey.</p>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex justify-center py-20">
+      <span class="w-8 h-8 rounded-full border-3 border-emerald-500 border-t-transparent animate-spin"></span>
+    </div>
+  } @else {
+    <!-- Main Trips Content Split Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fadeIn mb-6">
+      
+      <!-- Left Panel: Trip Console (Start / Running Screen) -->
+      <div class="lg:col-span-1 bg-slate-900/40 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-6 shadow-xl relative overflow-hidden flex flex-col justify-between">
+        
+        <div class="absolute -top-12 -left-12 w-24 h-24 rounded-full bg-cyan-500/5 blur-xl pointer-events-none"></div>
+
+        <div>
+          <!-- Active Status Header -->
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xs text-slate-400 font-bold uppercase tracking-wider">Trip Status</h3>
+            @if (activeTrip()) {
+              <span class="flex h-2 w-2 relative">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+              </span>
+            } @else {
+              <span class="px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700/50 text-[9px] text-slate-400 font-bold uppercase">
+                Idle
+              </span>
+            }
+          </div>
+
+          <!-- Case A: No active trip - Show "Start Trip" form -->
+          @if (!activeTrip()) {
+            <div class="animate-fadeIn">
+              <h4 class="text-base font-extrabold mb-4 text-emerald-400 flex items-center gap-1">
+                <span class="material-symbols-outlined text-lg leading-none">play_arrow</span> Ready to Ride
+              </h4>
+
+              @if (errorMessage(); as msg) {
+                <div class="bg-rose-500/10 border border-rose-500/20 text-rose-450 text-xs p-3 rounded-xl mb-4">
+                  {{ msg }}
+                </div>
+              }
+
+              <form [formGroup]="startForm" (ngSubmit)="onStartTrip()" class="flex flex-col gap-4">
+                
+                <!-- Start Odometer -->
+                <div class="flex flex-col gap-1.5">
+                  <label for="startOdometer" class="text-xs text-slate-400 font-bold uppercase tracking-wider">Start Odometer (km)</label>
+                  <input 
+                    type="number" 
+                    id="startOdometer" 
+                    formControlName="startOdometer"
+                    placeholder="Enter starting odo"
+                    class="w-full bg-slate-950/40 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-xl py-2.5 px-3 text-xs text-slate-100 transition-all outline-none"
+                  />
+                </div>
+
+                <!-- Purpose -->
+                <div class="flex flex-col gap-1.5">
+                  <label for="purpose" class="text-xs text-slate-400 font-bold uppercase tracking-wider">Riding Purpose</label>
+                  <select 
+                    id="purpose" 
+                    formControlName="purpose"
+                    class="w-full bg-slate-950/40 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-xl py-2.5 px-3 text-xs text-slate-100 transition-all outline-none cursor-pointer"
+                  >
+                    <option value="Office">🏢 Office</option>
+                    <option value="Personal">🏠 Personal</option>
+                    <option value="Ride">🏍 Ride</option>
+                    <option value="Vacation">🏖 Vacation</option>
+                    <option value="Family">👨👩👧 Family</option>
+                    <option value="Shopping">🛒 Shopping</option>
+                    <option value="Delivery">📦 Delivery</option>
+                    <option value="Business">🚚 Business</option>
+                    <option value="Airport">✈ Airport</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                <!-- Start Location -->
+                <div class="flex flex-col gap-1.5">
+                  <label for="startLocation" class="text-xs text-slate-400 font-bold uppercase tracking-wider">Start Location / City</label>
+                  <input 
+                    type="text" 
+                    id="startLocation" 
+                    formControlName="startLocation"
+                    placeholder="e.g. Pune"
+                    class="w-full bg-slate-950/40 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-xl py-2.5 px-3 text-xs text-slate-100 transition-all outline-none"
+                  />
+                </div>
+
+                <!-- Notes -->
+                <div class="flex flex-col gap-1.5">
+                  <label for="startNotes" class="text-xs text-slate-400 font-bold uppercase tracking-wider">Notes (Optional)</label>
+                  <textarea 
+                    id="startNotes" 
+                    formControlName="notes"
+                    rows="2"
+                    placeholder="Weekend group ride to Goa..."
+                    class="w-full bg-slate-950/40 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-xl py-2 px-3 text-xs text-slate-100 transition-all outline-none resize-none"
+                  ></textarea>
+                </div>
+
+                <!-- Start Action -->
+                <button 
+                  type="submit" 
+                  [disabled]="isSubmitting()"
+                  class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-extrabold rounded-xl py-3 text-xs hover:shadow-lg hover:shadow-emerald-500/10 active:scale-[0.98] transition-all disabled:opacity-55 cursor-pointer flex items-center justify-center gap-1.5 mt-2"
+                >
+                  <span class="material-symbols-outlined text-base leading-none">play_circle</span>
+                  <span>Start Trip</span>
+                </button>
+
+              </form>
+            </div>
+          }
+
+          <!-- Case B: Active trip running - Show "Stop Trip" form -->
+          @if (activeTrip(); as trip) {
+            <div class="animate-fadeIn">
+              <div class="flex items-center justify-between mb-4 border-b border-slate-800/60 pb-3">
+                <h4 class="text-base font-extrabold text-rose-400 flex items-center gap-1">
+                  <span class="material-symbols-outlined text-lg leading-none">autorenew</span> Trip Running
+                </h4>
+                <span class="px-2 py-0.5 rounded-full bg-rose-500/10 border border-rose-500/20 text-[9px] text-rose-450 font-bold uppercase">
+                  {{ trip.purpose }}
+                </span>
+              </div>
+
+              <!-- Live Stopwatch / Indicators -->
+              <div class="grid grid-cols-2 gap-3 mb-6 bg-slate-950/30 border border-slate-850 rounded-2xl p-4">
+                <div class="text-center border-r border-slate-850">
+                  <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider mb-0.5">Duration</p>
+                  <p class="text-lg font-black tracking-tight text-emerald-400">{{ runningDuration() }} min</p>
+                </div>
+                <div class="text-center">
+                  <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider mb-0.5">Start Odo</p>
+                  <p class="text-lg font-black tracking-tight text-slate-200">{{ trip.startOdometer }} km</p>
+                </div>
+              </div>
+
+              <!-- End Form -->
+              @if (errorMessage(); as msg) {
+                <div class="bg-rose-500/10 border border-rose-500/20 text-rose-450 text-xs p-3 rounded-xl mb-4">
+                  {{ msg }}
+                </div>
+              }
+
+              <form [formGroup]="endForm" (ngSubmit)="onEndTrip()" class="flex flex-col gap-4">
+                
+                <!-- End Odometer -->
+                <div class="flex flex-col gap-1.5">
+                  <label for="endOdometer" class="text-xs text-slate-400 font-bold uppercase tracking-wider">End Odometer (km)</label>
+                  <input 
+                    type="number" 
+                    id="endOdometer" 
+                    formControlName="endOdometer"
+                    placeholder="Ending odometer"
+                    class="w-full bg-slate-950/40 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-xl py-2.5 px-3 text-xs text-slate-100 transition-all outline-none"
+                  />
+                  <!-- Dynamically show distance in label -->
+                  @if (endForm.get('endOdometer')?.value; as endVal) {
+                    @if (Number(endVal) >= trip.startOdometer) {
+                      <p class="text-[10px] text-cyan-400 font-bold pl-1">
+                        Calculated Distance: {{ Number(endVal) - trip.startOdometer }} km
+                      </p>
+                    }
+                  }
+                </div>
+
+                <!-- End Location -->
+                <div class="flex flex-col gap-1.5">
+                  <label for="endLocation" class="text-xs text-slate-400 font-bold uppercase tracking-wider">End Location / City</label>
+                  <input 
+                    type="text" 
+                    id="endLocation" 
+                    formControlName="endLocation"
+                    placeholder="e.g. Mumbai"
+                    class="w-full bg-slate-950/40 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-xl py-2.5 px-3 text-xs text-slate-100 transition-all outline-none"
+                  />
+                </div>
+
+                <!-- Upload Photos -->
+                <div class="flex flex-col gap-1.5">
+                  <label for="photos" class="text-xs text-slate-400 font-bold uppercase tracking-wider">Upload Trip Photos (Multiple)</label>
+                  <input 
+                    type="file" 
+                    id="photos" 
+                    (change)="onPhotosSelected($event)"
+                    multiple
+                    accept="image/*"
+                    class="w-full text-xs text-slate-450 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-800 file:text-slate-350 hover:file:bg-slate-750 file:cursor-pointer"
+                  />
+                </div>
+
+                <!-- Ride Score Slider -->
+                <div class="flex flex-col gap-1.5">
+                  <div class="flex justify-between items-center px-1">
+                    <label class="text-xs text-slate-400 font-bold uppercase tracking-wider">Ride Score</label>
+                    <span class="text-xs font-bold text-emerald-400">{{ endForm.get('rideScore')?.value }}/100</span>
+                  </div>
+                  <input 
+                    type="range" 
+                    formControlName="rideScore"
+                    min="1" 
+                    max="100" 
+                    class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-400"
+                  />
+                </div>
+
+                <!-- GPS Simulator Button -->
+                <button 
+                  type="button" 
+                  (click)="simulateGpsPing()"
+                  class="w-full border border-dashed border-cyan-500/40 hover:border-cyan-500 hover:bg-cyan-500/5 text-cyan-400 font-semibold rounded-xl py-2 text-xs transition-all cursor-pointer flex items-center justify-center gap-1"
+                >
+                  <span class="material-symbols-outlined text-base">pin_drop</span>
+                  <span>Simulate GPS Location Ping</span>
+                </button>
+
+                <!-- End Action -->
+                <button 
+                  type="submit" 
+                  [disabled]="isSubmitting()"
+                  class="w-full bg-gradient-to-r from-rose-500 to-red-500 text-slate-100 font-extrabold rounded-xl py-3 text-xs hover:shadow-lg hover:shadow-rose-500/10 active:scale-[0.98] transition-all disabled:opacity-55 cursor-pointer flex items-center justify-center gap-1.5 mt-2"
+                >
+                  <span class="material-symbols-outlined text-base leading-none">stop_circle</span>
+                  <span>End Trip</span>
+                </button>
+
+              </form>
+            </div>
+          }
+        </div>
+
+      </div>
+
+      <!-- Right Panel: Trip History List -->
+      <div class="lg:col-span-2 flex flex-col gap-4">
+        
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2 px-1 select-none">
+          <span class="text-xs text-slate-400 font-extrabold uppercase">Travel Journal History</span>
+          <span class="text-[10px] text-slate-400 font-bold">{{ trips().length }} trips completed</span>
+        </div>
+
+        @if (trips().length === 0) {
+          <div class="text-center py-20 bg-slate-900/10 border border-slate-850 rounded-3xl animate-fadeIn">
+            <span class="material-symbols-outlined text-4xl text-slate-500 font-light mb-2">map</span>
+            <p class="text-xs font-semibold text-slate-400">No trips recorded in history</p>
+          </div>
+        } @else {
+          <div class="flex flex-col gap-4 max-h-[70vh] overflow-y-auto pr-1">
+            @for (t of trips(); track t._id) {
+              <div class="bg-slate-900/40 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-4 flex flex-col hover:border-slate-700 transition-all select-none">
+                
+                <!-- Card Header -->
+                <div class="flex items-center justify-between gap-4 border-b border-slate-850/60 pb-2.5 mb-3">
+                  <div class="flex items-center gap-2.5">
+                    <span class="px-2 py-0.5 rounded bg-slate-950 border border-slate-850 text-[9px] font-extrabold uppercase tracking-wide">
+                      {{ t.purpose }}
+                    </span>
+                    <span class="text-[10px] text-slate-400 font-medium">
+                      {{ t.startDate | date:'mediumDate' }}
+                    </span>
+                  </div>
+                  
+                  <div class="flex items-center gap-3">
+                    @if (t.rideScore) {
+                      <div class="flex items-center gap-0.5 text-xs text-emerald-400 font-bold">
+                        <span class="material-symbols-outlined text-base">stars</span>
+                        <span>Score: {{ t.rideScore }}</span>
+                      </div>
+                    }
+                    <button (click)="deleteTrip(t._id)" class="text-slate-500 hover:text-rose-400 transition-colors cursor-pointer" title="Delete log">
+                      <span class="material-symbols-outlined text-base leading-none">delete</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Odo detail rows -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                  <div>
+                    <p class="text-[9px] text-slate-450 font-bold uppercase tracking-wider mb-0.5">Distance</p>
+                    <p class="text-sm font-extrabold text-cyan-400">{{ t.distance }} km</p>
+                  </div>
+                  <div>
+                    <p class="text-[9px] text-slate-450 font-bold uppercase tracking-wider mb-0.5">Duration</p>
+                    <p class="text-sm font-extrabold text-slate-200">{{ t.duration }} min</p>
+                  </div>
+                  <div>
+                    <p class="text-[9px] text-slate-450 font-bold uppercase tracking-wider mb-0.5">Est. Fuel</p>
+                    <p class="text-sm font-extrabold text-slate-200">{{ getEstimatedFuelUsed(t.distance) }} L</p>
+                  </div>
+                  <div>
+                    <p class="text-[9px] text-slate-450 font-bold uppercase tracking-wider mb-0.5">Est. Cost</p>
+                    <p class="text-sm font-extrabold text-slate-200">₹{{ getEstimatedCost(t.distance) }}</p>
+                  </div>
+                </div>
+
+                <!-- Locations and weather footer -->
+                <div class="bg-slate-950/20 border border-slate-850 rounded-xl p-3 flex flex-col md:flex-row md:items-center justify-between gap-3 text-[10px] text-slate-400 select-none">
+                  <div class="flex items-center gap-1.5">
+                    <span class="material-symbols-outlined text-[14px]">location_on</span>
+                    <span class="font-bold text-slate-300">{{ t.startLocation }}</span>
+                    <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
+                    <span class="font-bold text-slate-300">{{ t.endLocation }}</span>
+                  </div>
+
+                  @if (t.weather) {
+                    <div class="flex items-center gap-3 border-t border-slate-850 md:border-none pt-2 md:pt-0">
+                      <span class="flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[14px] text-yellow-500">wb_sunny</span>
+                        <span>{{ t.weather.condition }} ({{ t.weather.temp }}°C)</span>
+                      </span>
+                      <span>•</span>
+                      <span>Humidity: {{ t.weather.humidity }}%</span>
+                    </div>
+                  }
+                </div>
+
+                <!-- Photos slide row -->
+                @if (t.photos && t.photos.length > 0) {
+                  <div class="flex gap-2 mt-3 overflow-x-auto pb-1">
+                    @for (photo of t.photos; track photo) {
+                      <a [href]="getTripPhotoUrl(photo)" target="_blank" class="w-12 h-12 rounded-lg border border-slate-800 overflow-hidden shrink-0 block relative group hover:border-emerald-500 transition-all select-none">
+                        <img [src]="getTripPhotoUrl(photo)" class="w-full h-full object-cover transition-transform group-hover:scale-110" alt="trip photo" />
+                      </a>
+                    }
+                  </div>
+                }
+
+              </div>
+            }
+          </div>
+        }
+
+      </div>
+
+    </div>
+
+    <!-- Trip Statistics Dashboard Row -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 select-none">
+      
+      <div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-4 flex flex-col">
+        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Longest Ride</span>
+        <div class="flex items-baseline gap-1">
+          <span class="text-2xl font-black tracking-tight text-emerald-400">{{ tripStats().longestRide }}</span>
+          <span class="text-xs text-slate-400 font-semibold">km</span>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-4 flex flex-col">
+        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Shortest Ride</span>
+        <div class="flex items-baseline gap-1">
+          <span class="text-2xl font-black tracking-tight text-slate-200">{{ tripStats().shortestRide }}</span>
+          <span class="text-xs text-slate-400 font-semibold">km</span>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-4 flex flex-col">
+        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Average Ride</span>
+        <div class="flex items-baseline gap-1">
+          <span class="text-2xl font-black tracking-tight text-cyan-400">{{ tripStats().averageRide }}</span>
+          <span class="text-xs text-slate-400 font-semibold">km</span>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-4 flex flex-col">
+        <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Total Trips Logged</span>
+        <div class="flex items-baseline gap-1">
+          <span class="text-2xl font-black tracking-tight">{{ tripStats().totalTrips }}</span>
+        </div>
+      </div>
+
+    </div>
+
+  }
+
+</div>

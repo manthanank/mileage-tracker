@@ -1,0 +1,241 @@
+<div class="max-w-7xl mx-auto p-4 md:p-6 select-none font-sans">
+  
+  <!-- Header Title -->
+  <div class="flex items-center justify-between border-b border-slate-800/60 pb-4 mb-6">
+    <div>
+      <h2 class="text-xl font-bold tracking-tight">Digital Garage Papers</h2>
+      <p class="text-xs text-slate-400">Store driving licenses, PUC certificates, vehicle RCs, and insurance policies securely.</p>
+    </div>
+    <button (click)="showAddForm()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 text-xs md:text-sm font-bold shadow-md hover:shadow-emerald-500/10 cursor-pointer transition-all">
+      <span class="material-symbols-outlined text-base">cloud_upload</span> Upload Paper
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex justify-center py-20">
+      <span class="w-8 h-8 rounded-full border-3 border-emerald-500 border-t-transparent animate-spin"></span>
+    </div>
+  } @else if (documents().length === 0) {
+    <div class="text-center py-24 bg-slate-900/20 border border-slate-850 rounded-3xl animate-fadeIn">
+      <span class="material-symbols-outlined text-5xl text-slate-500 font-light mb-3">folder</span>
+      <h3 class="text-lg font-bold mb-1">No documents uploaded</h3>
+      <p class="text-xs text-slate-400 mb-6">Save critical vehicle paperwork to trigger push notification expiry reminders.</p>
+      <button (click)="showAddForm()" class="px-5 py-2.5 rounded-xl bg-slate-850 hover:bg-slate-800 text-xs font-bold border border-slate-700 transition-all cursor-pointer">
+        Upload Your First Document
+      </button>
+    </div>
+  } @else {
+    
+    <!-- Documents Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fadeIn">
+      @for (doc of documents(); track doc._id) {
+        <div class="bg-slate-900/40 backdrop-blur-xl border border-slate-800/80 hover:border-slate-750 rounded-3xl p-5 shadow-xl relative flex flex-col justify-between transition-all group overflow-hidden">
+          
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <!-- Type Icon -->
+              <div class="p-2.5 bg-slate-850 border border-slate-800/80 rounded-2xl text-emerald-400">
+                <span class="material-symbols-outlined text-2xl leading-none">
+                  {{ doc.type === 'RC' ? 'badge' : doc.type === 'Insurance' ? 'security' : doc.type === 'PUC' ? 'eco' : 'description' }}
+                </span>
+              </div>
+              
+              <!-- Expiry Status badge -->
+              <span [class]="getValidityStatus(doc.expiryDate, doc.remindBeforeDays).colorClass" class="px-2.5 py-0.5 rounded-full border text-[9px] font-extrabold uppercase select-none">
+                {{ getValidityStatus(doc.expiryDate, doc.remindBeforeDays).text }}
+              </span>
+            </div>
+
+            <!-- Header -->
+            <h3 class="text-base font-bold truncate mb-0.5 group-hover:text-emerald-300 transition-colors">{{ doc.name }}</h3>
+            <p class="text-xs text-slate-450 truncate mb-4">Type: {{ doc.type }} • No: {{ doc.documentNumber || 'N/A' }}</p>
+
+            @if (doc.expiryDate) {
+              <div class="bg-slate-950/30 border border-slate-850 rounded-2xl p-3 mb-4 text-xs select-none">
+                <div class="flex items-center justify-between text-slate-400 text-[10px] uppercase font-bold tracking-wider mb-1">
+                  <span>Expiry Date</span>
+                  <span>Alert Threshold</span>
+                </div>
+                <div class="flex items-center justify-between font-bold text-slate-200">
+                  <span>{{ doc.expiryDate | date:'mediumDate' }}</span>
+                  <span class="text-cyan-400">{{ doc.remindBeforeDays }} Days warning</span>
+                </div>
+              </div>
+            } @else {
+              <div class="bg-slate-950/30 border border-slate-850 rounded-2xl p-3.5 mb-4 text-center text-xs text-slate-500 font-semibold select-none">
+                No Expiration Period
+              </div>
+            }
+          </div>
+
+          <!-- Footer Actions -->
+          <div class="flex items-center justify-between border-t border-slate-850/60 pt-3 select-none">
+            <a [href]="getDocumentUrl(doc.filePath)" target="_blank" class="text-xs text-emerald-450 hover:underline flex items-center gap-1 font-semibold">
+              <span class="material-symbols-outlined text-base">download</span> View Document
+            </a>
+            
+            <button (click)="deleteDoc(doc._id)" class="text-slate-400 hover:text-rose-455 transition-colors cursor-pointer" title="Delete document">
+              <span class="material-symbols-outlined text-lg leading-none">delete</span>
+            </button>
+          </div>
+
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Add Document Modal Popup Overlay -->
+  @if (isAddingDoc()) {
+    <div class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl animate-fadeIn max-h-[90vh] overflow-y-auto select-none">
+        
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-5">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-emerald-400">cloud_upload</span>
+            <h3 class="text-base font-bold">Upload Document</h3>
+          </div>
+          <button (click)="hideAddForm()" class="p-1 rounded-md text-slate-400 hover:text-slate-200 cursor-pointer">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        @if (errorMessage(); as msg) {
+          <div class="bg-rose-500/10 border border-rose-500/20 text-rose-455 text-xs p-3.5 rounded-xl mb-4">
+            {{ msg }}
+          </div>
+        }
+
+        <form [formGroup]="docForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <!-- Document Name -->
+            <div class="flex flex-col gap-1.5 col-span-1 md:col-span-2">
+              <label for="name" class="text-xs text-slate-400 font-bold uppercase tracking-wider">Document Name (e.g. HDFC Bike Insurance)</label>
+              <input 
+                type="text" 
+                id="name" 
+                formControlName="name"
+                placeholder="e.g. RE Hunter Insurance"
+                class="w-full bg-slate-950/40 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-xl py-2.5 px-3 text-xs text-slate-100 transition-all outline-none"
+              />
+            </div>
+
+            <!-- Type -->
+            <div class="flex flex-col gap-1.5">
+              <label for="type" class="text-xs text-slate-400 font-bold uppercase tracking-wider">Paper Category</label>
+              <select 
+                id="type" 
+                formControlName="type"
+                class="w-full bg-slate-950/40 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-xl py-2.5 px-3 text-xs text-slate-100 transition-all outline-none cursor-pointer"
+              >
+                <option value="RC">RC (Registration Certificate)</option>
+                <option value="Insurance">Insurance Policy</option>
+                <option value="PUC">PUC Pollution Certificate</option>
+                <option value="License">Driving Licence</option>
+                <option value="Purchase Invoice">Purchase Invoice</option>
+                <option value="Warranty">Warranty Documents</option>
+                <option value="Other">Other Paper</option>
+              </select>
+            </div>
+
+            <!-- Doc number -->
+            <div class="flex flex-col gap-1.5">
+              <label for="docNum" class="text-xs text-slate-400 font-bold uppercase tracking-wider">Document Number / ID</label>
+              <input 
+                type="text" 
+                id="docNum" 
+                formControlName="documentNumber"
+                placeholder="e.g. POL-987542"
+                class="w-full bg-slate-950/40 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-xl py-2.5 px-3 text-xs text-slate-100 transition-all outline-none"
+              />
+            </div>
+
+            <!-- Expiration Date -->
+            <div class="flex flex-col gap-1.5">
+              <label for="expiry" class="text-xs text-slate-400 font-bold uppercase tracking-wider">Expiration Date (Optional)</label>
+              <input 
+                type="date" 
+                id="expiry" 
+                formControlName="expiryDate"
+                class="w-full bg-slate-950/40 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-xl py-2.5 px-3 text-xs text-slate-100 transition-all outline-none"
+              />
+            </div>
+
+            <!-- Warning before days -->
+            <div class="flex flex-col gap-1.5">
+              <label for="remind" class="text-xs text-slate-400 font-bold uppercase tracking-wider">Expiry Warning Threshold</label>
+              <input 
+                type="number" 
+                id="remind" 
+                formControlName="remindBeforeDays"
+                class="w-full bg-slate-950/40 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-xl py-2.5 px-3 text-xs text-slate-100 transition-all outline-none"
+              />
+            </div>
+
+            <!-- Renewal Cost -->
+            <div class="flex flex-col gap-1.5 col-span-1 md:col-span-2">
+              <label for="cost" class="text-xs text-slate-400 font-bold uppercase tracking-wider">Registration/Renewal Fee (₹ - Auto Sync to Expense)</label>
+              <input 
+                type="number" 
+                id="cost" 
+                formControlName="cost"
+                class="w-full bg-slate-950/40 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-xl py-2.5 px-3 text-xs text-slate-100 transition-all outline-none"
+              />
+            </div>
+
+            <!-- File Upload -->
+            <div class="flex flex-col gap-1.5 col-span-1 md:col-span-2">
+              <label for="docFile" class="text-xs text-slate-400 font-bold uppercase tracking-wider">Select Document File (Image or PDF)</label>
+              <input 
+                type="file" 
+                id="docFile" 
+                (change)="onFileSelected($event)"
+                accept="image/*,application/pdf"
+                class="w-full text-xs text-slate-450 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-800 file:text-slate-350 hover:file:bg-slate-750 file:cursor-pointer"
+              />
+            </div>
+
+            <!-- Notes -->
+            <div class="flex flex-col gap-1.5 col-span-1 md:col-span-2">
+              <label for="notes" class="text-xs text-slate-400 font-bold uppercase tracking-wider">Notes</label>
+              <textarea 
+                id="notes" 
+                formControlName="notes"
+                rows="2"
+                placeholder="Insured via HDFC, covers accidental sprockets damage..."
+                class="w-full bg-slate-950/40 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-xl py-2 px-3 text-xs text-slate-100 transition-all outline-none resize-none"
+              ></textarea>
+            </div>
+
+          </div>
+
+          <div class="flex justify-end gap-3 mt-4 border-t border-slate-800 pt-4">
+            <button 
+              type="button" 
+              (click)="hideAddForm()"
+              class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-xs font-bold transition-all cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button 
+              type="submit" 
+              [disabled]="isSubmitting()"
+              class="px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 text-xs font-extrabold shadow-md hover:shadow-emerald-500/10 active:scale-[0.98] transition-all disabled:opacity-55 cursor-pointer flex items-center gap-1.5"
+            >
+              @if (isSubmitting()) {
+                <span class="w-3 h-3 rounded-full border border-slate-950 border-t-transparent animate-spin"></span>
+                <span>Uploading...</span>
+              } @else {
+                <span>Upload Paper</span>
+              }
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  }
+
+</div>

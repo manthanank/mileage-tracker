@@ -1,0 +1,311 @@
+<div class="min-h-screen bg-slate-950 text-slate-100 font-sans flex overflow-hidden">
+  
+  <!-- Sidebar Navigation - Desktop -->
+  <aside class="hidden md:flex flex-col w-64 bg-slate-900/50 backdrop-blur-xl border-r border-slate-800/80 p-5 shrink-0 select-none">
+    <!-- Brand Title -->
+    <div class="flex items-center gap-3 px-2 py-3 mb-8">
+      <span class="material-symbols-outlined text-emerald-400 text-3xl font-semibold animate-pulse">local_gas_station</span>
+      <h1 class="text-xl font-extrabold tracking-wide bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent">
+        DrivePulse
+      </h1>
+    </div>
+
+    <!-- Active User Details -->
+    @if (authService.currentUser(); as user) {
+      <div class="bg-slate-800/30 border border-slate-800/80 rounded-xl p-3 mb-6 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-emerald-500 to-teal-500 flex items-center justify-center font-bold text-slate-950 uppercase shadow-md shadow-emerald-500/20">
+          {{ user.username.charAt(0) }}
+        </div>
+        <div class="overflow-hidden">
+          <p class="text-sm font-semibold truncate">{{ user.username }}</p>
+          <p class="text-xs text-slate-400 truncate">{{ user.email }}</p>
+        </div>
+      </div>
+    }
+
+    <!-- Navigation Menu links -->
+    <nav class="flex-1 flex flex-col gap-2">
+      <a routerLink="/dashboard" routerLinkActive="bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400" class="flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40 hover:text-slate-100 transition-all duration-200">
+        <span class="material-symbols-outlined text-[22px]">dashboard</span>
+        <span class="text-sm font-medium">Dashboard</span>
+      </a>
+      <a routerLink="/fuel-logs" routerLinkActive="bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400" class="flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40 hover:text-slate-100 transition-all duration-200">
+        <span class="material-symbols-outlined text-[22px]">local_gas_station</span>
+        <span class="text-sm font-medium">Fuel Logs</span>
+      </a>
+      <a routerLink="/trips" routerLinkActive="bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400" class="flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40 hover:text-slate-100 transition-all duration-200">
+        <span class="material-symbols-outlined text-[22px]">directions_run</span>
+        <span class="text-sm font-medium">Trips</span>
+      </a>
+      <a routerLink="/expenses" routerLinkActive="bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400" class="flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40 hover:text-slate-100 transition-all duration-200">
+        <span class="material-symbols-outlined text-[22px]">payments</span>
+        <span class="text-sm font-medium">Expenses</span>
+      </a>
+      <a routerLink="/maintenance" routerLinkActive="bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400" class="flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40 hover:text-slate-100 transition-all duration-200">
+        <span class="material-symbols-outlined text-[22px]">build</span>
+        <span class="text-sm font-medium">Maintenance</span>
+      </a>
+      <a routerLink="/garage" routerLinkActive="bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400" class="flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40 hover:text-slate-100 transition-all duration-200">
+        <span class="material-symbols-outlined text-[22px]">garage</span>
+        <span class="text-sm font-medium">Digital Garage</span>
+      </a>
+      <a routerLink="/vehicles" routerLinkActive="bg-emerald-500/10 text-emerald-400 border-l-2 border-emerald-400" class="flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-slate-300 hover:bg-slate-800/40 hover:text-slate-100 transition-all duration-200">
+        <span class="material-symbols-outlined text-[22px]">settings</span>
+        <span class="text-sm font-medium">Manage Vehicles</span>
+      </a>
+    </nav>
+
+    <!-- Logout Action -->
+    <button (click)="handleLogout()" class="flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-all duration-200 text-left border-t border-slate-800/60 pt-4 mt-auto">
+      <span class="material-symbols-outlined text-[22px]">logout</span>
+      <span class="text-sm font-medium">Sign Out</span>
+    </button>
+
+    <!-- Build & Status Details -->
+    <div class="mt-4 pt-4 border-t border-slate-800/40 px-2 flex flex-col gap-1.5 select-none shrink-0">
+      <div class="flex items-center justify-between text-[10px] text-slate-500 font-semibold tracking-wider uppercase">
+        <span>System Status</span>
+        <div class="flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-sm shadow-emerald-400/50"></span>
+          <span class="text-emerald-400">Live</span>
+        </div>
+      </div>
+      <div class="flex items-center justify-between text-[9px] text-slate-600 font-medium">
+        <span>Build ID</span>
+        <span class="font-mono">v1.3.1-stable • #4902</span>
+      </div>
+      <div class="text-[9px] text-slate-600 font-medium text-center border-t border-slate-850/30 pt-1.5 mt-1">
+        Made with ❤️ by DrivePulse Team
+      </div>
+    </div>
+  </aside>
+
+  <!-- Mobile Sidebar Overlay Menu -->
+  @if (sidebarOpen()) {
+    <div class="fixed inset-0 z-40 bg-slate-950/80 backdrop-blur-sm md:hidden" (click)="toggleSidebar()"></div>
+    <aside class="fixed top-0 bottom-0 left-0 z-50 w-64 bg-slate-900 border-r border-slate-800 p-5 flex flex-col md:hidden select-none">
+      <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-emerald-400 text-3xl">local_gas_station</span>
+          <h1 class="text-lg font-extrabold tracking-wide bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">DrivePulse</h1>
+        </div>
+        <button (click)="toggleSidebar()" class="p-1 rounded-md text-slate-400 hover:text-slate-200">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <nav class="flex-1 flex flex-col gap-2">
+        <a routerLink="/dashboard" (click)="toggleSidebar()" routerLinkActive="bg-emerald-500/10 text-emerald-400" class="flex items-center gap-3 px-3 py-2.5 rounded-lg">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span>Dashboard</span>
+        </a>
+        <a routerLink="/fuel-logs" (click)="toggleSidebar()" routerLinkActive="bg-emerald-500/10 text-emerald-400" class="flex items-center gap-3 px-3 py-2.5 rounded-lg">
+          <span class="material-symbols-outlined">local_gas_station</span>
+          <span>Fuel Logs</span>
+        </a>
+        <a routerLink="/trips" (click)="toggleSidebar()" routerLinkActive="bg-emerald-500/10 text-emerald-400" class="flex items-center gap-3 px-3 py-2.5 rounded-lg">
+          <span class="material-symbols-outlined">directions_run</span>
+          <span>Trips</span>
+        </a>
+        <a routerLink="/expenses" (click)="toggleSidebar()" routerLinkActive="bg-emerald-500/10 text-emerald-400" class="flex items-center gap-3 px-3 py-2.5 rounded-lg">
+          <span class="material-symbols-outlined">payments</span>
+          <span>Expenses</span>
+        </a>
+        <a routerLink="/maintenance" (click)="toggleSidebar()" routerLinkActive="bg-emerald-500/10 text-emerald-400" class="flex items-center gap-3 px-3 py-2.5 rounded-lg">
+          <span class="material-symbols-outlined">build</span>
+          <span>Maintenance</span>
+        </a>
+        <a routerLink="/garage" (click)="toggleSidebar()" routerLinkActive="bg-emerald-500/10 text-emerald-400" class="flex items-center gap-3 px-3 py-2.5 rounded-lg">
+          <span class="material-symbols-outlined">garage</span>
+          <span>Digital Garage</span>
+        </a>
+        <a routerLink="/vehicles" (click)="toggleSidebar()" routerLinkActive="bg-emerald-500/10 text-emerald-400" class="flex items-center gap-3 px-3 py-2.5 rounded-lg">
+          <span class="material-symbols-outlined">settings</span>
+          <span>Manage Vehicles</span>
+        </a>
+      </nav>
+
+      <!-- Logout Action (Mobile) -->
+      <button (click)="handleLogout()" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-rose-400 mt-auto border-t border-slate-800 pt-4">
+        <span class="material-symbols-outlined">logout</span>
+        <span>Sign Out</span>
+      </button>
+
+      <!-- Build & Status Details (Mobile) -->
+      <div class="mt-4 pt-4 border-t border-slate-850 px-2 flex flex-col gap-1.5 select-none shrink-0">
+        <div class="flex items-center justify-between text-[10px] text-slate-500 font-semibold tracking-wider uppercase">
+          <span>System Status</span>
+          <div class="flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-sm shadow-emerald-400/50"></span>
+            <span class="text-emerald-400">Live</span>
+          </div>
+        </div>
+        <div class="flex items-center justify-between text-[9px] text-slate-600 font-medium">
+          <span>Build ID</span>
+          <span class="font-mono">v1.3.1-stable • #4902</span>
+        </div>
+      </div>
+    </aside>
+  }
+
+  <!-- Main Viewport Area -->
+  <div class="flex-1 flex flex-col overflow-hidden relative">
+    
+    <!-- Header Navbar -->
+    <header class="h-16 border-b border-slate-800/80 bg-slate-900/30 backdrop-blur-md px-4 md:px-6 flex items-center justify-between select-none">
+      <div class="flex items-center gap-3">
+        <!-- Sidebar Hamburger button (mobile only) -->
+        <button (click)="toggleSidebar()" class="md:hidden p-1.5 rounded-lg hover:bg-slate-800 text-slate-300">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <span class="hidden md:inline text-slate-400 text-sm font-medium">Welcome back!</span>
+      </div>
+
+      <!-- Header Tools (Vehicle Picker, Notifications) -->
+      <div class="flex items-center gap-4">
+        
+        <!-- Active Vehicle Selector Dropdown -->
+        <div class="relative">
+          <button (click)="toggleVehicleDropdown()" class="flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 transition-all text-xs md:text-sm font-semibold leading-none cursor-pointer">
+            <span class="material-symbols-outlined text-emerald-400 text-lg">
+              {{ vehicleService.activeVehicle()?.type === 'car' ? 'directions_car' : vehicleService.activeVehicle()?.type === 'scooter' ? 'moped' : 'motorcycle' }}
+            </span>
+            <span class="truncate max-w-[100px] md:max-w-[150px]">
+              {{ vehicleService.activeVehicle() ? vehicleService.activeVehicle().name : 'No Vehicles Found' }}
+            </span>
+            <span class="material-symbols-outlined text-slate-400 text-sm">arrow_drop_down</span>
+          </button>
+
+          @if (vehicleDropdownOpen()) {
+            <div class="fixed inset-0 z-10" (click)="toggleVehicleDropdown()"></div>
+            <div class="absolute right-0 mt-2 w-64 bg-slate-900 border border-slate-800 rounded-2xl shadow-xl z-20 py-2.5 animate-fadeIn">
+              <p class="text-slate-400 text-xs px-4 py-1.5 font-bold uppercase tracking-wider">Switch Vehicle</p>
+              
+              @if (vehicleService.vehicles().length === 0) {
+                <div class="px-4 py-3 text-sm text-slate-400 flex flex-col gap-2">
+                  <span>No vehicles available.</span>
+                  <a routerLink="/vehicles" (click)="toggleVehicleDropdown()" class="text-xs text-emerald-400 hover:underline flex items-center gap-1 font-semibold">
+                    <span class="material-symbols-outlined text-sm">add</span> Add one now
+                  </a>
+                </div>
+              } @else {
+                <div class="max-h-60 overflow-y-auto">
+                  @for (v of vehicleService.vehicles(); track v._id) {
+                    <button (click)="selectVehicle(v)" class="w-full flex items-center justify-between px-4 py-2 hover:bg-slate-800/50 text-left transition-all">
+                      <div class="flex items-center gap-2.5 overflow-hidden">
+                        <span class="material-symbols-outlined text-emerald-400 text-[18px]">
+                          {{ v.type === 'car' ? 'directions_car' : v.type === 'scooter' ? 'moped' : 'motorcycle' }}
+                        </span>
+                        <div class="overflow-hidden">
+                          <p class="text-sm font-semibold truncate">{{ v.name }}</p>
+                          <p class="text-[10px] text-slate-400 truncate">{{ v.brand }} {{ v.model }}</p>
+                        </div>
+                      </div>
+                      @if (vehicleService.activeVehicle()?._id === v._id) {
+                        <span class="material-symbols-outlined text-emerald-400 text-lg">check_circle</span>
+                      }
+                    </button>
+                  }
+                </div>
+                <div class="border-t border-slate-800 mt-2 pt-2 px-4">
+                  <a routerLink="/vehicles" (click)="toggleVehicleDropdown()" class="text-xs text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-1">
+                    <span class="material-symbols-outlined text-sm">settings</span> Manage Garage
+                  </a>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Notification center Drawer Toggle Button -->
+        <button (click)="toggleNotifications()" class="p-2 bg-slate-800/40 hover:bg-slate-800/80 rounded-xl relative border border-slate-800/60 transition-all cursor-pointer">
+          <span class="material-symbols-outlined text-[22px] text-slate-300">notifications</span>
+          @if (notificationService.unreadCount() > 0) {
+            <span class="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-rose-500 text-[10px] font-extrabold flex items-center justify-center text-slate-100 ring-2 ring-slate-950 animate-bounce shadow-lg shadow-rose-500/30">
+              {{ notificationService.unreadCount() }}
+            </span>
+          }
+        </button>
+
+      </div>
+    </header>
+
+    <!-- Main Viewport scrollable content -->
+    <main class="flex-1 overflow-y-auto bg-gradient-to-b from-slate-950 via-slate-950 to-slate-900">
+      @if (!vehicleService.activeVehicle() && router.url !== '/vehicles') {
+        <div class="max-w-md mx-auto mt-20 p-8 bg-slate-900/60 backdrop-blur-xl border border-slate-800/80 rounded-3xl text-center shadow-2xl animate-fadeIn">
+          <span class="material-symbols-outlined text-emerald-400 text-6xl mb-4 font-light">garage</span>
+          <h2 class="text-2xl font-bold tracking-tight mb-2">Configure Your Garage</h2>
+          <p class="text-slate-400 text-sm leading-relaxed mb-6">
+            DrivePulse works at its best when you register a vehicle. Let's head over to the Garage setup to register your first ride!
+          </p>
+          <a routerLink="/vehicles" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold hover:shadow-lg hover:shadow-emerald-500/20 transition-all cursor-pointer">
+            <span class="material-symbols-outlined text-lg">add</span> Register Vehicle
+          </a>
+        </div>
+      } @else {
+        <router-outlet></router-outlet>
+      }
+    </main>
+
+    <!-- Notification Drawer Slide-Out -->
+    @if (notificationOpen()) {
+      <div class="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-xs select-none" (click)="toggleNotifications()"></div>
+      <aside class="fixed top-0 bottom-0 right-0 z-50 w-80 md:w-96 bg-slate-900/95 backdrop-blur-2xl border-l border-slate-800 p-6 flex flex-col animate-slideLeft shadow-2xl">
+        <div class="flex items-center justify-between border-b border-slate-800/60 pb-4 mb-6">
+          <div class="flex items-center gap-2.5">
+            <span class="material-symbols-outlined text-emerald-400 text-2xl">notifications_active</span>
+            <h2 class="text-lg font-bold tracking-tight">Alert Center</h2>
+          </div>
+          <button (click)="toggleNotifications()" class="p-1 rounded-md text-slate-400 hover:text-slate-200 cursor-pointer">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        <div class="flex-1 overflow-y-auto flex flex-col gap-3 pr-1 select-none">
+          @if (notificationService.notifications().length === 0) {
+            <div class="text-center text-slate-400 py-20 flex flex-col gap-2">
+              <span class="material-symbols-outlined text-4xl text-slate-500 font-light">notifications_off</span>
+              <p class="text-sm font-semibold">Your inbox is clear</p>
+              <p class="text-xs text-slate-500 leading-normal px-6">You'll receive alert updates for maintenance dues and document exipries.</p>
+            </div>
+          } @else {
+            <div class="flex justify-between items-center mb-2 px-1">
+              <span class="text-xs text-slate-400 font-bold uppercase tracking-wider">Recent Alerts</span>
+              @if (notificationService.unreadCount() > 0) {
+                <button (click)="markAllNotificationsRead()" class="text-xs text-emerald-400 hover:text-emerald-300 font-bold hover:underline cursor-pointer">
+                  Mark all read
+                </button>
+              }
+            </div>
+            
+            @for (notif of notificationService.notifications(); track notif._id) {
+              <div [class.bg-slate-800/20]="notif.read" [class.bg-slate-800/70]="!notif.read" [class.border-l-4]="!notif.read" [class.border-emerald-400]="!notif.read" class="border border-slate-850 rounded-2xl p-4 flex flex-col relative group hover:border-slate-700/80 transition-all select-none">
+                <div class="flex items-start justify-between gap-2.5 mb-1.5">
+                  <h3 class="text-sm font-bold leading-snug group-hover:text-emerald-300 transition-colors pr-4">{{ notif.title }}</h3>
+                  
+                  <div class="flex gap-1.5 shrink-0">
+                    @if (!notif.read) {
+                      <button (click)="markNotificationRead($event, notif._id)" class="text-slate-400 hover:text-emerald-400 transition-all cursor-pointer" title="Mark as read">
+                        <span class="material-symbols-outlined text-lg leading-none">check</span>
+                      </button>
+                    }
+                    <button (click)="deleteNotification($event, notif._id)" class="text-slate-400 hover:text-rose-400 transition-all cursor-pointer" title="Delete notification">
+                      <span class="material-symbols-outlined text-lg leading-none">delete</span>
+                    </button>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed pr-2 mb-2">{{ notif.message }}</p>
+                <div class="flex items-center justify-between text-[9px] text-slate-400 font-medium">
+                  <span class="px-1.5 py-0.5 rounded bg-slate-950/40 uppercase tracking-wide">{{ notif.type }}</span>
+                  <span>{{ notif.triggerDate | date:'mediumDate' }}</span>
+                </div>
+              </div>
+            }
+          }
+        </div>
+      </aside>
+    }
+
+  </div>
+</div>

@@ -1,0 +1,287 @@
+<div class="max-w-7xl mx-auto p-4 md:p-6 select-none font-sans">
+  
+  @if (isLoading()) {
+    <div class="flex flex-col items-center justify-center py-32 gap-3">
+      <span class="w-10 h-10 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin"></span>
+      <p class="text-sm text-slate-400 font-semibold">Generating AI insights & health metrics...</p>
+    </div>
+  } @else if (error()) {
+    <div class="max-w-md mx-auto text-center py-20 p-6 bg-slate-900/50 border border-slate-800 rounded-3xl animate-fadeIn">
+      <span class="material-symbols-outlined text-rose-500 text-5xl mb-3">error_med_alert</span>
+      <h3 class="text-lg font-bold mb-1">Failed to load data</h3>
+      <p class="text-slate-400 text-xs mb-6">{{ error() }}</p>
+      <button (click)="activeVehicle() ? loadDashboard(activeVehicle()._id) : null" class="px-5 py-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-sm font-semibold transition-all">
+        Retry
+      </button>
+    </div>
+  } @else if (dashboardData(); as data) {
+    <!-- Main Dashboard Grid -->
+    <div class="flex flex-col gap-6 animate-fadeIn">
+      
+      <!-- Top Section: Health Gauge and Predictions -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Health Gauge Card -->
+        <div class="bg-slate-900/40 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-6 flex flex-col items-center justify-center shadow-xl relative overflow-hidden group">
+          <div class="absolute -top-12 -right-12 w-28 h-28 rounded-full bg-emerald-500/5 blur-2xl pointer-events-none"></div>
+          
+          <h3 class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-6">Vehicle Health Score</h3>
+          
+          <div class="relative w-44 h-44 flex items-center justify-center mb-6">
+            <!-- Radial SVG Bar -->
+            <svg class="w-full h-full transform -rotate-90">
+              <circle cx="88" cy="88" r="76" stroke="rgba(30, 41, 59, 0.6)" stroke-width="12" fill="transparent"></circle>
+              <circle cx="88" cy="88" r="76" 
+                [attr.stroke]="getHealthStrokeColor(data.health.score)" 
+                stroke-width="12" 
+                fill="transparent"
+                [attr.stroke-dasharray]="2 * 3.14159 * 76"
+                [attr.stroke-dashoffset]="2 * 3.14159 * 76 * (1 - (data.health.score / 100))"
+                stroke-linecap="round"
+                class="transition-all duration-1000 ease-out"
+              ></circle>
+            </svg>
+            <div class="absolute flex flex-col items-center justify-center text-center">
+              <span class="text-4xl font-extrabold tracking-tight bg-gradient-to-b from-white to-slate-200 bg-clip-text text-transparent">
+                {{ data.health.score }}
+              </span>
+              <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wide">out of 100</span>
+            </div>
+          </div>
+          
+          <div class="px-4 py-1.5 rounded-full border bg-slate-950/40 text-xs font-bold leading-none select-none"
+            [class]="getHealthColorClass(data.health.score)">
+            {{ data.health.status }}
+          </div>
+
+          <!-- Quick Diagnoses Checklist -->
+          <div class="w-full mt-6 grid grid-cols-2 gap-2 text-[10px] text-slate-400 border-t border-slate-800/60 pt-4 px-1">
+            <div class="flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[14px]" [class]="data.health.factors.insurance.score > 0 ? 'text-emerald-400' : 'text-rose-500'">
+                {{ data.health.factors.insurance.score > 0 ? 'check_circle' : 'cancel' }}
+              </span>
+              <span>Insurance policy</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[14px]" [class]="data.health.factors.puc.score > 0 ? 'text-emerald-400' : 'text-rose-500'">
+                {{ data.health.factors.puc.score > 0 ? 'check_circle' : 'cancel' }}
+              </span>
+              <span>PUC Certificate</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[14px]" [class]="data.health.factors.fuelEfficiency.score > 15 ? 'text-emerald-400' : 'text-yellow-500'">
+                {{ data.health.factors.fuelEfficiency.score > 15 ? 'check_circle' : 'warning' }}
+              </span>
+              <span>Fuel Economy</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-[14px]" [class]="data.health.factors.serviceHistory.score > 20 ? 'text-emerald-400' : 'text-rose-500'">
+                {{ data.health.factors.serviceHistory.score > 20 ? 'check_circle' : 'cancel' }}
+              </span>
+              <span>General Service</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- AI Predictions Column -->
+        <div class="lg:col-span-2 flex flex-col gap-6">
+          <div class="bg-slate-900/40 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-6 flex-1 flex flex-col justify-between shadow-xl relative overflow-hidden">
+            <div class="absolute -top-12 -left-12 w-28 h-28 rounded-full bg-cyan-500/5 blur-2xl pointer-events-none"></div>
+            
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-xs text-slate-400 font-bold uppercase tracking-wider">AI Predictions Dashboard</h3>
+              <span class="flex h-2 w-2 relative">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+              </span>
+            </div>
+
+            <!-- Predictions Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              
+              <!-- Fuel Predictions card -->
+              <div class="bg-slate-950/40 border border-slate-800/80 p-4 rounded-2xl flex flex-col hover:border-cyan-500/30 transition-all select-none">
+                <div class="flex items-center gap-2 mb-2 text-cyan-400">
+                  <span class="material-symbols-outlined text-lg leading-none">local_gas_station</span>
+                  <span class="text-[10px] font-bold uppercase tracking-wider">Fuel Stop</span>
+                </div>
+                <h4 class="text-lg font-black tracking-tight mb-1">
+                  {{ data.predictions.fuelPrediction.daysRemaining }} Day(s)
+                </h4>
+                <p class="text-[10px] text-slate-400 leading-normal">
+                  {{ data.predictions.fuelPrediction.message.split('AI predicts:')[1] || data.predictions.fuelPrediction.message }}
+                </p>
+              </div>
+
+              <!-- Service Predictions card -->
+              <div class="bg-slate-950/40 border border-slate-800/80 p-4 rounded-2xl flex flex-col hover:border-emerald-500/30 transition-all select-none">
+                <div class="flex items-center gap-2 mb-2 text-emerald-400">
+                  <span class="material-symbols-outlined text-lg leading-none">build</span>
+                  <span class="text-[10px] font-bold uppercase tracking-wider">Service Due</span>
+                </div>
+                <h4 class="text-lg font-black tracking-tight mb-1">
+                  {{ data.predictions.servicePrediction.dueInDays }} Day(s)
+                </h4>
+                <p class="text-[10px] text-slate-400 leading-normal">
+                  {{ data.predictions.servicePrediction.dueInKm | number }} km remaining before general checkup.
+                </p>
+              </div>
+
+              <!-- Expense Forecast card -->
+              <div class="bg-slate-950/40 border border-slate-800/80 p-4 rounded-2xl flex flex-col hover:border-yellow-500/30 transition-all select-none">
+                <div class="flex items-center gap-2 mb-2 text-yellow-400">
+                  <span class="material-symbols-outlined text-lg leading-none">payments</span>
+                  <span class="text-[10px] font-bold uppercase tracking-wider">Monthly Spend</span>
+                </div>
+                <h4 class="text-lg font-black tracking-tight mb-1">
+                  ₹{{ data.predictions.expensePrediction.forecastExpense | number }}
+                </h4>
+                <p class="text-[10px] text-slate-400 leading-normal">
+                  Expected cost (Current: ₹{{ data.predictions.expensePrediction.currentMonthExpense | number }}).
+                </p>
+              </div>
+
+            </div>
+
+            <!-- AI Insight Messages Carousel/List -->
+            <div class="bg-slate-950/60 border border-slate-850 rounded-2xl p-4 flex flex-col gap-3">
+              <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider leading-none">Usage Analytics Insights</span>
+              
+              <div class="flex flex-col gap-2.5 max-h-36 overflow-y-auto pr-1">
+                @for (insight of data.predictions.insights; track insight) {
+                  <div class="flex items-start gap-2.5 text-xs leading-relaxed text-slate-350">
+                    <span class="shrink-0 text-cyan-400 mt-0.5 text-[14px]">💡</span>
+                    <span>{{ insight.replace('💡', '') }}</span>
+                  </div>
+                }
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Quick Metrics row -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        
+        <div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-4 flex flex-col">
+          <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Current Odometer</span>
+          <div class="flex items-baseline gap-1">
+            <span class="text-2xl font-black tracking-tight">{{ data.vehicle.currentOdometer | number }}</span>
+            <span class="text-xs text-slate-400 font-semibold">km</span>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-4 flex flex-col">
+          <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Latest Mileage</span>
+          <div class="flex items-baseline gap-1">
+            <span class="text-2xl font-black tracking-tight text-emerald-400">
+              {{ data.latestMileage ? (data.latestMileage | number:'1.1-1') : 'N/A' }}
+            </span>
+            @if (data.latestMileage) {
+              <span class="text-xs text-slate-400 font-semibold">km/L</span>
+            }
+          </div>
+        </div>
+
+        <div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-4 flex flex-col">
+          <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Riding Behavior</span>
+          <div class="flex items-baseline gap-1">
+            <span class="text-xl font-black tracking-tight text-cyan-400">
+              {{ data.predictions.ridingBehavior.weekendRider }}%
+            </span>
+            <span class="text-xs text-slate-450 truncate">Weekend Riding</span>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/40 border border-slate-800/80 rounded-2xl p-4 flex flex-col">
+          <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-1">Monthly Cost</span>
+          <div class="flex items-baseline gap-1">
+            <span class="text-2xl font-black tracking-tight">₹{{ data.predictions.expensePrediction.currentMonthExpense | number }}</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Activity Timeline Section -->
+      <div class="bg-slate-900/40 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-6 shadow-xl relative select-none">
+        <h3 class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-6">Recent Vehicle Logs</h3>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          
+          <!-- Recent Fuel Fills -->
+          <div class="flex flex-col gap-4">
+            <div class="flex items-center justify-between border-b border-slate-800/60 pb-2 mb-2 px-1">
+              <span class="text-xs text-slate-400 font-extrabold uppercase">Refuelings</span>
+              <a routerLink="/fuel-logs" class="text-xs text-emerald-450 hover:underline font-semibold flex items-center gap-0.5">
+                View all <span class="material-symbols-outlined text-sm">chevron_right</span>
+              </a>
+            </div>
+            
+            @if (data.recentActivity.fuel.length === 0) {
+              <p class="text-center text-slate-500 py-12 text-xs">No fuel entries logged yet.</p>
+            } @else {
+              <div class="flex flex-col gap-3">
+                @for (entry of data.recentActivity.fuel; track entry._id) {
+                  <div class="bg-slate-950/30 border border-slate-850 rounded-2xl p-3.5 flex items-center justify-between hover:border-slate-800 transition-all text-xs">
+                    <div class="flex items-center gap-3">
+                      <div class="p-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl">
+                        <span class="material-symbols-outlined text-lg leading-none">local_gas_station</span>
+                      </div>
+                      <div>
+                        <p class="font-bold">Filled {{ entry.liters }} Liters</p>
+                        <p class="text-[10px] text-slate-400">{{ entry.date | date:'mediumDate' }} at {{ entry.fuelStation || 'Fuel Station' }}</p>
+                      </div>
+                    </div>
+                    <div class="text-right">
+                      <p class="font-black">₹{{ entry.totalCost | number }}</p>
+                      <p class="text-[10px] text-slate-400">{{ entry.odometer | number }} km</p>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+
+          <!-- Recent Trips -->
+          <div class="flex flex-col gap-4">
+            <div class="flex items-center justify-between border-b border-slate-800/60 pb-2 mb-2 px-1">
+              <span class="text-xs text-slate-400 font-extrabold uppercase">Trip Rides</span>
+              <a routerLink="/trips" class="text-xs text-cyan-405 hover:underline font-semibold flex items-center gap-0.5">
+                View all <span class="material-symbols-outlined text-sm">chevron_right</span>
+              </a>
+            </div>
+            
+            @if (data.recentActivity.trips.length === 0) {
+              <p class="text-center text-slate-500 py-12 text-xs">No rides logged yet.</p>
+            } @else {
+              <div class="flex flex-col gap-3">
+                @for (trip of data.recentActivity.trips; track trip._id) {
+                  <div class="bg-slate-950/30 border border-slate-850 rounded-2xl p-3.5 flex items-center justify-between hover:border-slate-800 transition-all text-xs">
+                    <div class="flex items-center gap-3">
+                      <div class="p-2 bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 rounded-xl">
+                        <span class="material-symbols-outlined text-lg leading-none">directions_run</span>
+                      </div>
+                      <div>
+                        <p class="font-bold">{{ trip.purpose }} Ride</p>
+                        <p class="text-[10px] text-slate-400">{{ trip.startDate | date:'mediumDate' }} • {{ trip.duration }} min</p>
+                      </div>
+                    </div>
+                    <div class="text-right">
+                      <p class="font-black text-cyan-400">{{ trip.distance }} km</p>
+                      <p class="text-[10px] text-slate-400">{{ trip.startOdometer }} km -> {{ trip.endOdometer || 'Running' }} km</p>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  }
+</div>

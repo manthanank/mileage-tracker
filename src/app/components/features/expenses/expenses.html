@@ -1,0 +1,276 @@
+<div class="max-w-7xl mx-auto p-4 md:p-6 select-none font-sans">
+  
+  <!-- Header Title -->
+  <div class="flex items-center justify-between border-b border-slate-800/60 pb-4 mb-6">
+    <div>
+      <h2 class="text-xl font-bold tracking-tight">Expenses Ledger</h2>
+      <p class="text-xs text-slate-400">Track and categorize parking fees, tolls, accessories, refuels, and general services.</p>
+    </div>
+    
+    <div class="flex gap-2">
+      <!-- Download Report -->
+      <button (click)="downloadCSVReport()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-850 hover:bg-slate-800 border border-slate-700/60 text-slate-300 text-xs font-bold transition-all cursor-pointer">
+        <span class="material-symbols-outlined text-base">download</span> Export CSV
+      </button>
+
+      <!-- Record Expense -->
+      <button (click)="showAddForm()" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 text-xs md:text-sm font-bold shadow-md hover:shadow-emerald-500/10 cursor-pointer transition-all">
+        <span class="material-symbols-outlined text-base">receipt_long</span> Record Cost
+      </button>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="flex justify-center py-20">
+      <span class="w-8 h-8 rounded-full border-3 border-emerald-500 border-t-transparent animate-spin"></span>
+    </div>
+  } @else if (expenses().length === 0) {
+    <div class="text-center py-24 bg-slate-900/20 border border-slate-850 rounded-3xl animate-fadeIn">
+      <span class="material-symbols-outlined text-5xl text-slate-500 font-light mb-3">payments</span>
+      <h3 class="text-lg font-bold mb-1">No expenses recorded</h3>
+      <p class="text-xs text-slate-400 mb-6">Log toll rates, wash costs, or accessories to audit vehicle maintenance.</p>
+      <button (click)="showAddForm()" class="px-5 py-2.5 rounded-xl bg-slate-850 hover:bg-slate-800 text-xs font-bold border border-slate-700 transition-all cursor-pointer">
+        Record Your First Cost
+      </button>
+    </div>
+  } @else {
+    
+    <!-- Split section: Category Summary and Expenses list -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fadeIn">
+      
+      <!-- Left Panel: Category Breakdown list -->
+      <div class="lg:col-span-1 bg-slate-900/40 backdrop-blur-xl border border-slate-800/80 rounded-3xl p-6 shadow-xl relative overflow-hidden flex flex-col justify-between">
+        <div class="absolute -top-12 -right-12 w-24 h-24 rounded-full bg-yellow-500/5 blur-xl pointer-events-none"></div>
+
+        <div>
+          <h3 class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-6">Financial Overview</h3>
+
+          <div class="bg-slate-950/30 border border-slate-850 rounded-2xl p-4 mb-6">
+            <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider mb-0.5">Total Ownership Cost</p>
+            <p class="text-3xl font-black tracking-tight text-yellow-400">₹{{ summary().totalExpense | number }}</p>
+          </div>
+
+          <div class="flex flex-col gap-4">
+            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Category Split</p>
+            
+            <div class="flex flex-col gap-3 max-h-64 overflow-y-auto pr-1">
+              @for (item of summary().breakdown; track item.category) {
+                <div class="text-xs flex flex-col gap-1 select-none">
+                  <div class="flex justify-between items-center text-slate-350">
+                    <span class="font-bold">{{ item.category }}</span>
+                    <span class="font-extrabold text-slate-100">
+                      ₹{{ item.amount | number }} ({{ item.percentage }}%)
+                    </span>
+                  </div>
+                  <!-- Progress bar -->
+                  <div class="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden">
+                    <div class="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full transition-all duration-500"
+                      [style.width.%]="item.percentage">
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Panel: Expenses list -->
+      <div class="lg:col-span-2 flex flex-col gap-4">
+        
+        <div class="flex items-center justify-between border-b border-slate-800 pb-2 px-1 select-none">
+          <span class="text-xs text-slate-400 font-extrabold uppercase">Transaction Logs</span>
+        </div>
+
+        <div class="flex flex-col gap-4 max-h-[68vh] overflow-y-auto pr-1">
+          @for (e of expenses(); track e._id) {
+            <div class="bg-slate-900/40 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-4 flex items-center justify-between gap-4 hover:border-slate-700 transition-all group relative overflow-hidden">
+              
+              <div class="flex items-center gap-3">
+                <div class="p-2 bg-slate-850 border border-slate-800 rounded-xl text-slate-300">
+                  <span class="material-symbols-outlined text-lg leading-none">
+                    {{ e.category === 'Fuel' ? 'local_gas_station' : e.category === 'Service' ? 'build' : e.category === 'Insurance' ? 'security' : 'payments' }}
+                  </span>
+                </div>
+                <div>
+                  <div class="flex items-center gap-2 mb-0.5">
+                    <span class="text-sm font-bold">{{ e.category }}</span>
+                    @if (e.associatedId) {
+                      <span class="px-1.5 py-0.5 rounded bg-slate-950 border border-slate-850 text-[8px] text-cyan-400 font-extrabold uppercase tracking-wide flex items-center gap-0.5" title="Synced automatically with logs">
+                        <span class="material-symbols-outlined text-[10px]">sync</span> Synced
+                      </span>
+                    }
+                  </div>
+                  <p class="text-[10px] text-slate-400">{{ e.date | date:'mediumDate' }} • {{ e.notes || 'No notes' }}</p>
+                </div>
+              </div>
+
+              <div class="flex items-center gap-4">
+                <div class="text-right">
+                  <p class="text-sm font-black text-slate-200">₹{{ e.amount | number }}</p>
+                  @if (e.odometer) {
+                    <p class="text-[9px] text-slate-400">{{ e.odometer | number }} km</p>
+                  }
+                </div>
+
+                <!-- Receipt -->
+                @if (e.receiptPhoto) {
+                  <a [href]="getReceiptUrl(e.receiptPhoto)" target="_blank" class="p-1 text-slate-400 hover:text-emerald-400 transition-colors" title="View receipt">
+                    <span class="material-symbols-outlined text-base leading-none">image</span>
+                  </a>
+                }
+
+                <!-- Delete (Locked on Synced expenses) -->
+                @if (!e.associatedId) {
+                  <button (click)="deleteExpense(e._id)" class="text-slate-500 hover:text-rose-455 transition-colors cursor-pointer" title="Delete log">
+                    <span class="material-symbols-outlined text-base leading-none">delete</span>
+                  </button>
+                } @else {
+                  <span class="w-[26px]"></span> <!-- Spacer -->
+                }
+              </div>
+
+            </div>
+          }
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+  <!-- Add Expense Modal popup overlay -->
+  @if (isAddingExpense()) {
+    <div class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl animate-fadeIn max-h-[90vh] overflow-y-auto select-none">
+        
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-5">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-emerald-400">receipt_long</span>
+            <h3 class="text-base font-bold">Record Cost</h3>
+          </div>
+          <button (click)="hideAddForm()" class="p-1 rounded-md text-slate-400 hover:text-slate-200 cursor-pointer">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        @if (errorMessage(); as msg) {
+          <div class="bg-rose-500/10 border border-rose-500/20 text-rose-455 text-xs p-3.5 rounded-xl mb-4">
+            {{ msg }}
+          </div>
+        }
+
+        <form [formGroup]="expenseForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <!-- Date -->
+            <div class="flex flex-col gap-1.5">
+              <label for="date" class="text-xs text-slate-400 font-bold uppercase tracking-wider">Date</label>
+              <input 
+                type="date" 
+                id="date" 
+                formControlName="date"
+                class="w-full bg-slate-950/40 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-xl py-2.5 px-3 text-xs text-slate-100 transition-all outline-none"
+              />
+            </div>
+
+            <!-- Category -->
+            <div class="flex flex-col gap-1.5">
+              <label for="category" class="text-xs text-slate-400 font-bold uppercase tracking-wider">Expense Category</label>
+              <select 
+                id="category" 
+                formControlName="category"
+                class="w-full bg-slate-950/40 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-xl py-2.5 px-3 text-xs text-slate-100 transition-all outline-none cursor-pointer"
+              >
+                <option value="Parking">Parking Fee</option>
+                <option value="Tolls">Highway Toll</option>
+                <option value="Wash">Washing / Detailing</option>
+                <option value="Accessories">Accessories</option>
+                <option value="Insurance">Insurance Payment</option>
+                <option value="PUC">PUC Certificate fee</option>
+                <option value="Other">Other Expenses</option>
+              </select>
+            </div>
+
+            <!-- Amount -->
+            <div class="flex flex-col gap-1.5">
+              <label for="amount" class="text-xs text-slate-400 font-bold uppercase tracking-wider">Amount Paid (₹)</label>
+              <input 
+                type="number" 
+                id="amount" 
+                formControlName="amount"
+                placeholder="e.g. 150"
+                class="w-full bg-slate-950/40 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-xl py-2.5 px-3 text-xs text-slate-100 transition-all outline-none"
+              />
+            </div>
+
+            <!-- Odometer -->
+            <div class="flex flex-col gap-1.5">
+              <label for="odo" class="text-xs text-slate-400 font-bold uppercase tracking-wider">Odometer (Optional)</label>
+              <input 
+                type="number" 
+                id="odo" 
+                formControlName="odometer"
+                placeholder="Current km reading"
+                class="w-full bg-slate-950/40 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-xl py-2.5 px-3 text-xs text-slate-100 transition-all outline-none"
+              />
+            </div>
+
+            <!-- Receipt upload -->
+            <div class="flex flex-col gap-1.5 col-span-1 md:col-span-2">
+              <label for="receiptFile" class="text-xs text-slate-400 font-bold uppercase tracking-wider">Upload Receipt Image (Optional)</label>
+              <input 
+                type="file" 
+                id="receiptFile" 
+                (change)="onFileSelected($event)"
+                accept="image/*"
+                class="w-full text-xs text-slate-450 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-800 file:text-slate-350 hover:file:bg-slate-750 file:cursor-pointer"
+              />
+            </div>
+
+            <!-- Notes -->
+            <div class="flex flex-col gap-1.5 col-span-1 md:col-span-2">
+              <label for="notes" class="text-xs text-slate-400 font-bold uppercase tracking-wider">Notes</label>
+              <textarea 
+                id="notes" 
+                formControlName="notes"
+                rows="2"
+                placeholder="Detailed context..."
+                class="w-full bg-slate-950/40 border border-slate-800 focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 rounded-xl py-2 px-3 text-xs text-slate-100 transition-all outline-none resize-none"
+              ></textarea>
+            </div>
+
+          </div>
+
+          <div class="flex justify-end gap-3 mt-4 border-t border-slate-800 pt-4">
+            <button 
+              type="button" 
+              (click)="hideAddForm()"
+              class="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-750 text-xs font-bold transition-all cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button 
+              type="submit" 
+              [disabled]="isSubmitting()"
+              class="px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 text-xs font-extrabold shadow-md hover:shadow-emerald-500/10 active:scale-[0.98] transition-all disabled:opacity-55 cursor-pointer flex items-center gap-1.5"
+            >
+              @if (isSubmitting()) {
+                <span class="w-3 h-3 rounded-full border border-slate-950 border-t-transparent animate-spin"></span>
+                <span>Saving...</span>
+              } @else {
+                <span>Save Expense</span>
+              }
+            </button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  }
+
+</div>
