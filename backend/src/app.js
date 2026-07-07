@@ -23,6 +23,9 @@ const analyticsRoutes = require('./routes/analytics');
 
 const app = express();
 
+// Trust Vercel's reverse proxy (needed for express-rate-limit)
+app.set('trust proxy', 1);
+
 // Security Middlewares
 app.use(helmet({
   crossOriginResourcePolicy: false, // Allows loading uploaded files in browser from other origins
