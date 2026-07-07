@@ -1,0 +1,255 @@
+<!-- ========== NAVBAR ========== -->
+<header class="nav-header" aria-label="Primary navigation">
+  <div class="nav-inner">
+    <a class="nav-logo" routerLink="/" aria-label="DrivePulse Home">
+      <span class="logo-icon">🏍️</span>
+      <span class="logo-text">Drive<span class="logo-accent">Pulse</span></span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation links">
+      <a class="nav-link" href="#features">Features</a>
+      <a class="nav-link" href="#how-it-works">How it Works</a>
+      <a class="nav-link" href="#tech">Tech Stack</a>
+    </nav>
+    <div class="nav-cta">
+      <a routerLink="/login" class="btn-ghost" id="nav-login-btn">Log In</a>
+      <a routerLink="/register" class="btn-primary-sm" id="nav-register-btn">Get Started</a>
+    </div>
+  </div>
+</header>
+
+<!-- ========== HERO ========== -->
+<section class="hero-section" aria-labelledby="hero-heading">
+  <div class="hero-bg-grid" aria-hidden="true"></div>
+  <div class="hero-glow hero-glow-1" aria-hidden="true"></div>
+  <div class="hero-glow hero-glow-2" aria-hidden="true"></div>
+
+  <div class="hero-inner">
+    <div class="hero-badge">
+      <span class="badge-dot" aria-hidden="true"></span>
+      <span>Powered by Google Gemini AI</span>
+    </div>
+
+    <h1 id="hero-heading" class="hero-title">
+      Your Vehicle.<br>
+      <span class="hero-title-gradient">Intelligently Tracked.</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      DrivePulse is a premium vehicle mileage, trip telemetry, expense, and maintenance tracker — enhanced with real-time AI diagnostics, service projections, and a glassmorphic dashboard experience.
+    </p>
+
+    <div class="hero-actions">
+      <a routerLink="/register" class="btn-primary-lg" id="hero-cta-btn">
+        <span>Start Tracking Free</span>
+        <span class="btn-arrow" aria-hidden="true">→</span>
+      </a>
+      <a routerLink="/login" class="btn-ghost-lg" id="hero-login-btn">Sign In</a>
+    </div>
+
+    <div class="hero-stats" role="list" aria-label="Platform highlights">
+      <div class="hero-stat" role="listitem">
+        <span class="stat-value">100%</span>
+        <span class="stat-label">AI-Powered</span>
+      </div>
+      <div class="stat-divider" aria-hidden="true"></div>
+      <div class="hero-stat" role="listitem">
+        <span class="stat-value">9</span>
+        <span class="stat-label">REST API Modules</span>
+      </div>
+      <div class="stat-divider" aria-hidden="true"></div>
+      <div class="hero-stat" role="listitem">
+        <span class="stat-value">Real-Time</span>
+        <span class="stat-label">Trip Telemetry</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard preview mockup -->
+  <div class="hero-mockup" aria-hidden="true">
+    <div class="mockup-window">
+      <div class="mockup-titlebar">
+        <span class="dot dot-red"></span>
+        <span class="dot dot-yellow"></span>
+        <span class="dot dot-green"></span>
+        <span class="mockup-url">drivepulse.app/dashboard</span>
+      </div>
+      <div class="mockup-body">
+        <div class="mockup-sidebar">
+          <div class="mock-logo">🏍️ DrivePulse</div>
+          <div class="mock-nav-item mock-active">📊 Dashboard</div>
+          <div class="mock-nav-item">🚗 Vehicles</div>
+          <div class="mock-nav-item">⛽ Fuel Logs</div>
+          <div class="mock-nav-item">🗺️ Trips</div>
+          <div class="mock-nav-item">💰 Expenses</div>
+          <div class="mock-nav-item">🔧 Maintenance</div>
+        </div>
+        <div class="mockup-content">
+          <div class="mock-health-card">
+            <div class="mock-health-label">Health Score</div>
+            <div class="mock-health-score">87<span>%</span></div>
+            <div class="mock-health-bar"><div class="mock-health-fill" style="width: 87%"></div></div>
+            <div class="mock-health-status">Good Condition</div>
+          </div>
+          <div class="mock-stats-row">
+            <div class="mock-stat-card">
+              <div class="mock-stat-icon">⛽</div>
+              <div class="mock-stat-num">42.3</div>
+              <div class="mock-stat-lbl">km/L</div>
+            </div>
+            <div class="mock-stat-card">
+              <div class="mock-stat-icon">🗺️</div>
+              <div class="mock-stat-num">1,248</div>
+              <div class="mock-stat-lbl">km this month</div>
+            </div>
+            <div class="mock-stat-card">
+              <div class="mock-stat-icon">💰</div>
+              <div class="mock-stat-num">₹3,420</div>
+              <div class="mock-stat-lbl">forecast</div>
+            </div>
+          </div>
+          <div class="mock-ai-card">
+            <div class="mock-ai-header">
+              <span class="mock-ai-badge">✨ Gemini AI Insight</span>
+            </div>
+            <div class="mock-ai-text">💡 Your mileage dropped 8% in the last 3 fills — consider a carburetor service.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== FEATURES ========== -->
+<section class="features-section" id="features" aria-labelledby="features-heading">
+  <div class="section-inner">
+    <div class="section-badge">Core Capabilities</div>
+    <h2 id="features-heading" class="section-title">Everything Your Vehicle Deserves</h2>
+    <p class="section-subtitle">From AI-powered diagnostics to precision mileage calculations — DrivePulse covers every aspect of your vehicle ownership journey.</p>
+
+    <div class="features-grid" role="list">
+
+      <article class="feature-card" role="listitem">
+        <div class="feature-icon-wrap feature-icon-emerald" aria-hidden="true">🤖</div>
+        <h3 class="feature-title">Gemini AI Diagnostics</h3>
+        <p class="feature-desc">Real-time contextual insights from Google Gemini. Get maintenance alerts, mileage feedback, and monthly budget forecasts — with seamless rule-based fallback.</p>
+      </article>
+
+      <article class="feature-card" role="listitem">
+        <div class="feature-icon-wrap feature-icon-blue" aria-hidden="true">⛽</div>
+        <h3 class="feature-title">Smart Fuel Economy</h3>
+        <p class="feature-desc">Log refuels and watch DrivePulse compute precise km/L using full-tank pooling algorithms — even handling partial fills and missed fill corrections automatically.</p>
+      </article>
+
+      <article class="feature-card" role="listitem">
+        <div class="feature-icon-wrap feature-icon-purple" aria-hidden="true">🗺️</div>
+        <h3 class="feature-title">Trip Stopwatch Journal</h3>
+        <p class="feature-desc">Start a live riding timer, capture scenic photos, log weather conditions, and auto-score your ride quality on trip completion.</p>
+      </article>
+
+      <article class="feature-card" role="listitem">
+        <div class="feature-icon-wrap feature-icon-amber" aria-hidden="true">📁</div>
+        <h3 class="feature-title">Digital Document Vault</h3>
+        <p class="feature-desc">Upload insurance, PUC, and RC scans to Cloudinary. Visual countdown rings alert you of upcoming expiry dates before they sneak up on you.</p>
+      </article>
+
+      <article class="feature-card" role="listitem">
+        <div class="feature-icon-wrap feature-icon-rose" aria-hidden="true">💰</div>
+        <h3 class="feature-title">Expense Forecasting</h3>
+        <p class="feature-desc">Track fuel, repairs, and tax costs. DrivePulse extrapolates monthly spend using a daily run-rate model and visualises budget distributions.</p>
+      </article>
+
+      <article class="feature-card" role="listitem">
+        <div class="feature-icon-wrap feature-icon-teal" aria-hidden="true">🔧</div>
+        <h3 class="feature-title">Maintenance Scheduler</h3>
+        <p class="feature-desc">Monitor battery age, tyre wear, chain lubrication, and general service intervals — all degraded dynamically from your actual mileage velocity.</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ========== HOW IT WORKS ========== -->
+<section class="how-section" id="how-it-works" aria-labelledby="how-heading">
+  <div class="section-inner">
+    <div class="section-badge">Simple Onboarding</div>
+    <h2 id="how-heading" class="section-title">Up and Running in Minutes</h2>
+
+    <ol class="steps-list" aria-label="Getting started steps">
+      <li class="step-item">
+        <div class="step-number" aria-label="Step 1">01</div>
+        <div class="step-body">
+          <h3 class="step-title">Register Your Account</h3>
+          <p class="step-desc">Create your free account in seconds. No credit card required.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-number" aria-label="Step 2">02</div>
+        <div class="step-body">
+          <h3 class="step-title">Add Your Vehicle</h3>
+          <p class="step-desc">Register your bike or car with its brand, model, year, and starting odometer reading.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-number" aria-label="Step 3">03</div>
+        <div class="step-body">
+          <h3 class="step-title">Log Fuel, Trips & Expenses</h3>
+          <p class="step-desc">Every refuel, ride, and cost you record feeds the AI engine with richer context.</p>
+        </div>
+      </li>
+      <li class="step-item">
+        <div class="step-number" aria-label="Step 4">04</div>
+        <div class="step-body">
+          <h3 class="step-title">Let AI Work for You</h3>
+          <p class="step-desc">DrivePulse surfaces maintenance warnings, mileage insights, and spend forecasts automatically from your data.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ========== TECH STACK ========== -->
+<section class="tech-section" id="tech" aria-labelledby="tech-heading">
+  <div class="section-inner">
+    <div class="section-badge">Under the Hood</div>
+    <h2 id="tech-heading" class="section-title">Built on a Premium Stack</h2>
+
+    <div class="tech-grid" role="list">
+      <div class="tech-pill" role="listitem"><span aria-hidden="true">⚡</span> Angular 21</div>
+      <div class="tech-pill" role="listitem"><span aria-hidden="true">🎨</span> Tailwind CSS v4</div>
+      <div class="tech-pill" role="listitem"><span aria-hidden="true">🔗</span> Node.js & Express</div>
+      <div class="tech-pill" role="listitem"><span aria-hidden="true">🍃</span> MongoDB & Mongoose</div>
+      <div class="tech-pill" role="listitem"><span aria-hidden="true">✨</span> Google Gemini AI</div>
+      <div class="tech-pill" role="listitem"><span aria-hidden="true">☁️</span> Cloudinary</div>
+      <div class="tech-pill" role="listitem"><span aria-hidden="true">🔐</span> JWT Auth</div>
+      <div class="tech-pill" role="listitem"><span aria-hidden="true">🚀</span> Vercel Serverless</div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CTA BANNER ========== -->
+<section class="cta-section" aria-labelledby="cta-heading">
+  <div class="cta-glow" aria-hidden="true"></div>
+  <div class="section-inner cta-inner">
+    <h2 id="cta-heading" class="cta-title">Ready to take control of your vehicle?</h2>
+    <p class="cta-subtitle">Join DrivePulse today and put AI-powered telemetry in your garage.</p>
+    <a routerLink="/register" class="btn-primary-lg" id="cta-final-btn">
+      <span>Create Free Account</span>
+      <span class="btn-arrow" aria-hidden="true">→</span>
+    </a>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="landing-footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-logo">
+      <span>🏍️</span>
+      <span>Drive<span class="logo-accent">Pulse</span></span>
+    </div>
+    <p class="footer-copy">© 2026 DrivePulse. Built with Angular 21 & Google Gemini AI.</p>
+    <div class="footer-links">
+      <a routerLink="/login" class="footer-link">Sign In</a>
+      <a routerLink="/register" class="footer-link">Register</a>
+    </div>
+  </div>
+</footer>
