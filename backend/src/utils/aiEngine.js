@@ -511,6 +511,8 @@ const getPredictionsAndInsights = async (vehicleId) => {
     insights
   };
 
+  const documents = await Document.find({ vehicle: vehicleId });
+
   // Attempt to enhance predictions with Gemini AI if key is active
   const geminiData = await generateInsightsWithGemini(
     vehicle,
