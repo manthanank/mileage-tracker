@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -8,4 +8,10 @@ import { RouterLink } from '@angular/router';
   styleUrl: './landing.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LandingComponent {}
+export class LandingComponent {
+  protected readonly mobileMenuOpen = signal(false);
+
+  protected toggleMobileMenu() {
+    this.mobileMenuOpen.update((v) => !v);
+  }
+}

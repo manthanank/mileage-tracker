@@ -14,8 +14,38 @@
       <a routerLink="/login" class="btn-ghost" id="nav-login-btn">Log In</a>
       <a routerLink="/register" class="btn-primary-sm" id="nav-register-btn">Get Started</a>
     </div>
+    
+    <!-- Mobile hamburger button -->
+    <button class="nav-mobile-toggle" (click)="toggleMobileMenu()" aria-label="Toggle navigation menu" [attr.aria-expanded]="mobileMenuOpen()">
+      <span class="material-symbols-outlined">{{ mobileMenuOpen() ? 'close' : 'menu' }}</span>
+    </button>
   </div>
 </header>
+
+<!-- Mobile Menu Drawer Overlay -->
+@if (mobileMenuOpen()) {
+  <div class="mobile-nav-backdrop" (click)="toggleMobileMenu()" aria-hidden="true"></div>
+  <aside class="mobile-nav-drawer" role="dialog" aria-modal="true" aria-label="Mobile Navigation Menu">
+    <div class="mobile-nav-header">
+      <a class="nav-logo" routerLink="/" (click)="toggleMobileMenu()" aria-label="DrivePulse Home">
+        <span class="logo-icon">🏍️</span>
+        <span class="logo-text">Drive<span class="logo-accent">Pulse</span></span>
+      </a>
+      <button class="mobile-nav-close" (click)="toggleMobileMenu()" aria-label="Close navigation menu">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <nav class="mobile-nav-body" aria-label="Mobile primary links">
+      <a class="mobile-nav-link" href="#features" (click)="toggleMobileMenu()">Features</a>
+      <a class="mobile-nav-link" href="#how-it-works" (click)="toggleMobileMenu()">How it Works</a>
+      <a class="mobile-nav-link" href="#tech" (click)="toggleMobileMenu()">Tech Stack</a>
+    </nav>
+    <div class="mobile-nav-footer">
+      <a routerLink="/login" (click)="toggleMobileMenu()" class="btn-ghost-full">Log In</a>
+      <a routerLink="/register" (click)="toggleMobileMenu()" class="btn-primary-full">Get Started</a>
+    </div>
+  </aside>
+}
 
 <!-- ========== HERO ========== -->
 <section class="hero-section" aria-labelledby="hero-heading">
